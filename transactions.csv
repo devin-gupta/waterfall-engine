@@ -1,0 +1,61 @@
+transaction_date,transaction_amount,contribution_or_distribution,commitment_id
+01/01/2019," $ (10,000.00)",contribution,1
+01/01/2019," $ (10,000.00)",contribution,2
+01/01/2019," $ (20,000.00)",contribution,3
+01/01/2019," $ (40,000.00)",contribution,4
+01/01/2019," $ (50,000.00)",contribution,5
+01/01/2019," $ (60,000.00)",contribution,6
+01/01/2019," $ (70,000.00)",contribution,7
+01/01/2019," $ (100,000.00)",contribution,8
+01/01/2019," $ (116,666.67)",contribution,9
+01/01/2019," $ (136,666.67)",contribution,10
+06/01/2019," $ (20,000.00)",contribution,1
+06/01/2019," $ (20,000.00)",contribution,2
+06/01/2019," $ (40,000.00)",contribution,3
+06/01/2019," $ (80,000.00)",contribution,4
+06/01/2019," $ (100,000.00)",contribution,5
+06/01/2019," $ (120,000.00)",contribution,6
+06/01/2019," $ (140,000.00)",contribution,7
+06/01/2019," $ (160,000.00)",contribution,8
+06/01/2019," $ (180,000.00)",contribution,9
+06/01/2019," $ (200,000.00)",contribution,10
+06/01/2020," $ (20,000.00)",contribution,1
+06/01/2020," $ (20,000.00)",contribution,2
+06/01/2020," $ (40,000.00)",contribution,3
+06/01/2020," $ (80,000.00)",contribution,4
+06/01/2020," $ (100,000.00)",contribution,5
+06/01/2020," $ (120,000.00)",contribution,6
+06/01/2020," $ (140,000.00)",contribution,7
+06/01/2020," $ (160,000.00)",contribution,8
+06/01/2020," $ (180,000.00)",contribution,9
+06/01/2020," $ (200,000.00)",contribution,10
+01/01/2021," $ 60,000.00 ",distribution,1
+01/01/2021," $ 40,000.00 ",distribution,2
+01/01/2021," $ 50,000.00 ",distribution,3
+01/01/2021," $ 60,000.00 ",distribution,4
+01/01/2021," $ 70,000.00 ",distribution,5
+01/01/2021," $ 80,000.00 ",distribution,6
+01/01/2021," $ 90,000.00 ",distribution,7
+01/01/2021," $ 100,000.00 ",distribution,8
+01/01/2021," $ 100,000.00 ",distribution,9
+01/01/2021," $ 100,000.00 ",distribution,10
+06/01/2021," $ 40,000.00 ",distribution,1
+06/01/2021," $ 20,000.00 ",distribution,2
+06/01/2021," $ 30,000.00 ",distribution,3
+06/01/2021," $ 40,000.00 ",distribution,4
+06/01/2021," $ 50,000.00 ",distribution,5
+06/01/2021," $ 60,000.00 ",distribution,6
+06/01/2021," $ 70,000.00 ",distribution,7
+06/01/2021," $ 80,000.00 ",distribution,8
+06/01/2021," $ 90,000.00 ",distribution,9
+06/01/2021," $ 100,000.00 ",distribution,10
+01/01/2022," $ 100,000.00 ",distribution,1
+01/01/2022," $ 200,000.00 ",distribution,2
+01/01/2022," $ 300,000.00 ",distribution,3
+01/01/2022," $ 400,000.00 ",distribution,4
+01/01/2022," $ 500,000.00 ",distribution,5
+01/01/2022," $ 600,000.00 ",distribution,6
+01/01/2022," $ 700,000.00 ",distribution,7
+01/01/2022," $ 800,000.00 ",distribution,8
+01/01/2022," $ 900,000.00 ",distribution,9
+01/01/2022," $ 1,000,000.00 ",distribution,10
