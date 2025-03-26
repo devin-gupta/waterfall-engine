@@ -2,9 +2,21 @@
 
 This is a project aimed at calculating LP and GP allocations for a given project assuming a set of commitments and distributions. You can get started by working through the notebook called 'example.ipynb'.
 
+### example.ipynb
+
+To get started with the example notebook, upload your custom transactions.csv to the root project directory, possibly in the 'waterfall-engine' folder.
+
+Then in your terminal (at the root project path), install your requirements.
+
+```
+pip install -r requirements.txt
+```
+
+Finally, run all cells in the examples notebook and see the results. The first cell should output a full list of attributes and uses the defined `WaterfallEngine` class. The remaining cells outline the methodology used.
+
 ### waterfall.py
 
-This file contains the `WaterfallEngine` class. You can import this class and generate 'reports' via the following parameters: 
+This file contains the `WaterfallEngine` class. You can import this class and generate 'reports' via the following parameters:
 
 ```
 engine = WaterfallEngine(csv_path='transactions.csv')
@@ -33,15 +45,3 @@ engine = WaterfallEngine(
 | Catch Up via ['catch_up']                        | ['lp_allocation'] | ['gp_allocation'] |                                        |
 | Final Split via ['final_split']                   | ['lp_allocation'] | ['gp_allocation'] |                                        |
 | Totals                                             | total_lp_profit   | total_gp_profit   | profit_split_percentage                |
-
-### example.ipynb
-
-To get started with the example notebook, upload your custom transactions.csv to the root project directory, possibly in the 'waterfall-engine' folder.
-
-Then in your terminal (at the root project path), install your requirements.
-
-```
-pip install -r requirements.txt
-```
-
-Finally, run all cells in the examples notebook and see the results. The first cell should output a full list of attributes and uses the defined `WaterfallEngine` class. The remaining cells outline the methodology used.
