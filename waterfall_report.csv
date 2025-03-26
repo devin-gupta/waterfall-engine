@@ -1,0 +1,2 @@
+commitment_id,analysis_date,total_commitment,total_distributions,return_of_capital,preferred_return,catch_up,final_split,total_lp_profit,total_gp_profit,profit_split_percentage
+4,2024-01-01,-200000.0,500000.0,"{'lp_allocation': np.float64(200000.0), 'gp_allocation': 0}","{'lp_allocation': np.float64(38426.45354903315), 'gp_allocation': 0}","{'lp_allocation': 0, 'gp_allocation': np.float64(9606.613387258287)}","{'lp_allocation': np.float64(201573.54645096685), 'gp_allocation': np.float64(50393.3866127417)}",440000.0,59999.999999999985,0.2
