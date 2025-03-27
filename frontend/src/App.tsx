@@ -1,4 +1,4 @@
-import { useState, useEffect, DragEvent } from 'react'
+import { useState, DragEvent } from 'react'
 import { TextField, Paper, Typography, Button } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import './App.css'
@@ -66,24 +66,32 @@ function App() {
     if (transactions && commitmentId && date) {
       fetch('http://localhost:8000/api/calculate', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
-          commitment_id: commitmentId,
-          date,
+          input_commitment_id: commitmentId,
+          input_date: date,
+          transactions,
           irr,
           carried_interest_rate: carriedInterestRate,
           catchup_rate: catchupRate,
           lp_split_rate: lpSplitRate,
-          transactions,
         }),
       })
       .then(response => response.json())
-      .then(data => setResults(data.data))
-      .catch(error => console.error('Error:', error))
+      .then(data => {
+        setResults(data.data);
+        alert('Successfully uploaded data and recieved a response');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error processing request');
+      })
     } else {
-      alert('Please ensure all fields are filled and transactions are uploaded.')
+      alert('Please ensure all fields are filled and transactions are uploaded.');
     }
   }
 
@@ -206,27 +214,6 @@ function App() {
           )}
         </Paper>
       </main>
-
-      {/* <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p> */}
     </div>
   )
 }
