@@ -1,0 +1,22 @@
+{
+    "input_commitment_id": 1.0,
+    "input_date": "01/02/2020",
+    "transactions": [
+      {
+        "transaction_date": "01/01/2019",
+        "transaction_amount": "$ (1000.00)",
+        "contribution_or_distribution": "contribution",
+        "commitment_id": 1.0
+      },
+      {
+        "transaction_date": "01/01/2020",
+        "transaction_amount": "$ 2000.00",
+        "contribution_or_distribution": "distribution",
+        "commitment_id": 1.0
+      }
+    ],
+    "irr": 0.08,
+    "carried_interest_rate": 0.2,
+    "catchup_rate": 1.0,
+    "lp_split_rate": 0.8
+}

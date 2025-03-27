@@ -45,3 +45,24 @@ engine = WaterfallEngine(
 | Catch Up via ['catch_up']                        | ['lp_allocation'] | ['gp_allocation'] |                                        |
 | Final Split via ['final_split']                   | ['lp_allocation'] | ['gp_allocation'] |                                        |
 | Totals                                             | total_lp_profit   | total_gp_profit   | profit_split_percentage                |
+
+### Accessing the API
+
+I've also setup a backend setup which you can access and use directly once you have your server running locally by running the following steps.
+
+1. Go to `docker-compose.yml` and build this file. You can do so via hitting 'Run Services' if you have the VSCode Docker IDE running. Now the backend should be running on port 8000 and frontend on port 80 which you can check via:
+
+   ```
+   http://localhost:8000
+   ```
+
+   This should display 'API is running' if live.
+2. To test the method you can run the following curl from the root directory:
+
+```
+curl -X POST http://localhost:8000/api/calculate \
+	-H "Content-Type: application/json" \
+	-d @backend/test.json
+```
+
+If you'd like to update the parameters, adjust them in `backend/test.json`.

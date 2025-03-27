@@ -216,7 +216,7 @@ class WaterfallEngine:
 
         # Calculate final LP and GP allocations
         lp_allocation = catch_up_result['next_tier_capital'] * self.lp_split_rate
-        gp_allocation = catch_up_result['next_tier_capital'] * (1 - self.lp_split_rate)
+        gp_allocation = round(catch_up_result['next_tier_capital'] * (1 - self.lp_split_rate))
 
         return {
             'is_completed': True,
@@ -326,7 +326,7 @@ class WaterfallEngine:
         
         # Convert analysis result to DataFrame for reporting
         report_df = pd.DataFrame([analysis_result])
-        report_df.to_csv('waterfall_report.csv', index=False)
+        # report_df.to_csv('waterfall_report.csv', index=False)
         
         return report_df
 

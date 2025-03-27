@@ -40,3 +40,139 @@
 .read-the-docs {
   color: #888;
 }
+
+:root {
+  --deep-green: #1a472a;
+  --light-beige: #f7f3e3;  /* Lightened beige */
+  --hover-green: #2a5a3a;
+  --text-color: #1a1a1a;  /* Darkened slate */
+  --input-bg: #f7f3e3;
+}
+
+body {
+  background-color: var(--deep-green);
+  font-family: 'Georgia', serif;
+  margin: 0;
+  padding: 0;
+  color: var(--light-beige);
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 2rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: var(--light-beige);
+  font-weight: normal;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.inputs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.required-inputs, .optional-inputs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.input-field {
+  min-width: 200px !important;
+  margin: 8px !important;
+}
+
+.input-field .MuiFilledInput-root {
+  background-color: var(--input-bg) !important;
+}
+
+.input-field .MuiInputLabel-root,
+.input-field .MuiInputBase-input {
+  color: var(--text-color) !important;
+}
+
+.input-field .MuiFormHelperText-root {
+  color: var(--light-beige) !important;
+}
+
+.drop-zone {
+  border: 2px dashed var(--light-beige);
+  padding: 3rem !important;
+  text-align: center;
+  border-radius: 8px;
+  background-color: transparent !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--light-beige);
+  margin: 2rem auto !important;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.drop-zone:hover {
+  background-color: rgba(245, 245, 220, 0.05) !important;
+}
+
+.drop-zone.dragging {
+  background-color: rgba(245, 245, 220, 0.1) !important;
+  border-style: solid;
+}
+
+.upload-icon {
+  font-size: 4rem !important;
+  color: var(--light-beige);
+}
+
+.results-box {
+  background-color: rgba(245, 245, 220, 0.1) !important;
+  padding: 2rem;
+  border-radius: 8px;
+  min-height: 200px;
+  color: var(--light-beige);
+  margin: 1rem auto;
+  max-width: 800px;
+}
+
+.results-box h2 {
+  color: var(--light-beige);
+  margin-top: 0;
+  font-weight: normal;
+}
+
+.results-box pre {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .required-inputs, .optional-inputs {
+    flex-direction: column;
+  }
+  
+  input {
+    width: 100%;
+  }
+}

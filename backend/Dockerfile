@@ -17,13 +17,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create a non-root user
 RUN addgroup --system appuser && adduser --system --ingroup appuser appuser
 
-# Copy and install dependencies first (leverage Docker cache)
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy application code and waterfall engine
+COPY main.py .
+COPY waterfall.py .
 
 # Change ownership of the app directory
 RUN chown -R appuser:appuser /app
