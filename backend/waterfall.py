@@ -294,21 +294,28 @@ class WaterfallEngine:
                 catch_up_result['gp_allocation'] + 
                 final_split_result['gp_allocation']
             ),
-            'profit_split_percentage': self.carried_interest_rate
+            'profit_split_percentage': self.lp_split_rate
         }
 
-    def _get_total_commitment(self, commitment_id: int) -> float:
+    def _get_total_commitment(self, commitment_id: int, analysis_date: str) -> float:
         """Calculate total capital commitment for a given commitment ID."""
-        return self.transactions_df[
+        commitment = self.transactions_df[
             (self.transactions_df['commitment_id'] == commitment_id) & 
-            (self.transactions_df['contribution_or_distribution'] == 'contribution')
+            (self.transactions_df['contribution_or_distribution'] == 'contribution') & 
+            (self.transactions_df['transaction_date'] < analysis_date)
         ]['transaction_amount'].sum()
 
-    def _get_total_distributions(self, commitment_id: int) -> float:
+        if commitment < 0: 
+            commitment = commitment * (-1)
+        
+        return commitment
+
+    def _get_total_distributions(self, commitment_id: int, analysis_date: str) -> float:
         """Calculate total distributions for a given commitment ID."""
         return self.transactions_df[
             (self.transactions_df['commitment_id'] == commitment_id) & 
-            (self.transactions_df['contribution_or_distribution'] == 'distribution')
+            (self.transactions_df['contribution_or_distribution'] == 'distribution') & 
+            (self.transactions_df['transaction_date'] < analysis_date)
         ]['transaction_amount'].sum()
 
     def generate_report(self, commitment_id: int, analysis_date: str) -> pd.DataFrame:
