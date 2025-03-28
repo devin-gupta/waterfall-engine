@@ -66,3 +66,23 @@ curl -X POST http://localhost:8000/api/calculate \
 ```
 
 If you'd like to update the parameters, adjust them in `backend/test.json`.
+
+### Using the Frontend
+
+Make sure you have Docker installed from the [installation guide](https://docs.docker.com/get-docker/). Clone the repository using the following command: 
+
+```
+git clone https://github.com/devin-gupta/waterfall-engine.git
+```
+
+Navigate to the project directory and build the docker container from the `docker-compose.yml` file.
+
+```
+docker compose up --build
+```
+
+Now in your native browser you can go to `http://localhost` for the frontend, and the API will be running at `http://localhost:8000`.
+
+---
+
+Built by Devin for the Maybern team!

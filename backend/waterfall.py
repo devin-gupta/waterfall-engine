@@ -279,7 +279,9 @@ class WaterfallEngine:
 
         total_initial_commitment = self._get_total_commitment(commitment_id, analysis_date)
 
-        total_lp_profit = roc_result['lp_allocation'] + pref_result['lp_allocation'] + catch_up_result['lp_allocation'] + final_split_result['lp_allocation']
+        total_lp_profit = (
+            roc_result['lp_allocation'] + pref_result['lp_allocation'] + catch_up_result['lp_allocation'] + final_split_result['lp_allocation'] - total_initial_commitment
+        )
         total_gp_profit = roc_result['gp_allocation'] + pref_result['gp_allocation'] + catch_up_result['gp_allocation'] + final_split_result['gp_allocation']
 
         profit_split_percentage = (total_lp_profit - total_initial_commitment) / (total_lp_profit + total_gp_profit - total_initial_commitment)

@@ -91,9 +91,11 @@ header h1 {
 }
 
 .input-field {
-  background-color: var(--gray-100) !important;
+  background-color: white !important;
   border-radius: 5px;
   margin: 0.5rem !important;
+  min-width: 200px !important;
+  flex: 1 !important;
 }
 
 .input-field .MuiInputLabel-root {
@@ -197,6 +199,19 @@ header h1 {
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 1rem;
+}
+
+.optional-inputs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.optional-inputs .MuiTextField-root {
+  flex-basis: 200px;
 }
 
 @media (max-width: 768px) {
