@@ -19,10 +19,9 @@ class WaterfallEngine:
     def __init__(
             self, 
             csv_path: str, 
-            irr: float = 0.08, 
-            carried_interest_rate: float = 0.2, 
+            pref_irr: float = 0.08, 
+            carried_interest_percentage: float = 0.2, 
             catch_up_rate: float = 1.0, 
-            lp_split_rate: float = 0.8
         ):
         """
         Initialize the WaterfallEngine with transaction data.
@@ -32,14 +31,12 @@ class WaterfallEngine:
             irr (float, optional): Internal Rate of Return. Defaults to 8%.
         """
         # Core configuration parameters
-        self.irr = irr
-        self.carried_interest_rate = carried_interest_rate
+        self.pref_irr = pref_irr
+        self.carried_interest_percentage = carried_interest_percentage
         self.catch_up_rate = catch_up_rate
-        self.lp_split_rate = lp_split_rate
 
         # Load and preprocess transaction data
         self.transactions_df = self._load_and_process_transactions(csv_path)
-
 
     def _load_and_process_transactions(self, csv_path: str) -> pd.DataFrame:
         """
@@ -144,13 +141,16 @@ class WaterfallEngine:
 
         # Calculate NPV of contributions
         contribution_npv = sum(
-            self._calculate_npv(row['transaction_amount'], self.irr, (final_distribution_date - row['transaction_date']).days)
+            self._calculate_npv(row['transaction_amount'], self.pref_irr, (final_distribution_date - row['transaction_date']).days)
             for _, row in subset_df.iterrows() 
             if row['contribution_or_distribution'] == 'contribution'
         )
 
         # Calculate LP allocation with remaining capital
-        max_lp_allocation = min(abs(contribution_npv) - abs(roc_result['lp_allocation']), roc_result['next_tier_capital'])
+        max_lp_allocation = round(min(
+            abs(contribution_npv) - abs(roc_result['lp_allocation']), 
+            roc_result['next_tier_capital']
+        ), 2)
         
         return {
             'is_completed': True,
@@ -181,10 +181,10 @@ class WaterfallEngine:
             }
 
         # Calculate total catch-up amount
-        total_catch_up = self.carried_interest_rate * abs(pref_result['lp_allocation']) / (self.catch_up_rate - self.carried_interest_rate)
+        total_catch_up = self.carried_interest_percentage * abs(pref_result['lp_allocation']) / (self.catch_up_rate - self.carried_interest_percentage)
         
         # Determine effective catch-up
-        effective_catch_up = min(total_catch_up, pref_result['next_tier_capital'])
+        effective_catch_up = round(min(total_catch_up, pref_result['next_tier_capital']), 2)
 
         return {
             'is_completed': total_catch_up <= pref_result['next_tier_capital'],
@@ -215,8 +215,8 @@ class WaterfallEngine:
             }
 
         # Calculate final LP and GP allocations
-        lp_allocation = catch_up_result['next_tier_capital'] * self.lp_split_rate
-        gp_allocation = round(catch_up_result['next_tier_capital'] * (1 - self.lp_split_rate))
+        lp_allocation = round(catch_up_result['next_tier_capital'] * (1 - self.carried_interest_percentage), 2)
+        gp_allocation = round(catch_up_result['next_tier_capital'] * self.carried_interest_percentage, 2)
 
         return {
             'is_completed': True,
@@ -239,64 +239,6 @@ class WaterfallEngine:
         """
         return value * (1 + rate) ** (days / 365)
 
-    def analyze_commitment(self, commitment_id: int, analysis_date: str) -> Dict[str, any]:
-        """
-        Perform comprehensive waterfall analysis for a specific commitment.
-        
-        Args:
-            commitment_id (int): Unique identifier for the commitment
-            analysis_date (str): Date to perform the analysis
-        
-        Returns:
-            Dict containing detailed waterfall distribution analysis
-        """
-        # Analyze each stage of the waterfall distribution
-        roc_result = self._return_of_capital(commitment_id, analysis_date)
-        pref_result = self._preferred_return(commitment_id, analysis_date, roc_result)
-        catch_up_result = self._catch_up(commitment_id, analysis_date, pref_result)
-        final_split_result = self._final_split(commitment_id, analysis_date, catch_up_result)
-
-        # Compile comprehensive results
-        return {
-            'commitment_id': commitment_id,
-            'analysis_date': analysis_date,
-            'total_commitment': self._get_total_commitment(commitment_id),
-            'total_distributions': self._get_total_distributions(commitment_id),
-            
-            # Stage-wise allocations
-            'return_of_capital': {
-                'lp_allocation': roc_result['lp_allocation'],
-                'gp_allocation': roc_result['gp_allocation']
-            },
-            'preferred_return': {
-                'lp_allocation': pref_result['lp_allocation'],
-                'gp_allocation': pref_result['gp_allocation']
-            },
-            'catch_up': {
-                'lp_allocation': catch_up_result['lp_allocation'],
-                'gp_allocation': catch_up_result['gp_allocation']
-            },
-            'final_split': {
-                'lp_allocation': final_split_result['lp_allocation'],
-                'gp_allocation': final_split_result['gp_allocation']
-            },
-            
-            # Aggregate profit calculations
-            'total_lp_profit': (
-                roc_result['lp_allocation'] + 
-                pref_result['lp_allocation'] + 
-                catch_up_result['lp_allocation'] + 
-                final_split_result['lp_allocation']
-            ),
-            'total_gp_profit': (
-                roc_result['gp_allocation'] + 
-                pref_result['gp_allocation'] + 
-                catch_up_result['gp_allocation'] + 
-                final_split_result['gp_allocation']
-            ),
-            'profit_split_percentage': self.lp_split_rate
-        }
-
     def _get_total_commitment(self, commitment_id: int, analysis_date: str) -> float:
         """Calculate total capital commitment for a given commitment ID."""
         commitment = self.transactions_df[
@@ -318,6 +260,61 @@ class WaterfallEngine:
             (self.transactions_df['transaction_date'] < analysis_date)
         ]['transaction_amount'].sum()
 
+    def analyze_commitment(self, commitment_id: int, analysis_date: str) -> Dict[str, any]:
+        """
+        Perform comprehensive waterfall analysis for a specific commitment.
+        
+        Args:
+            commitment_id (int): Unique identifier for the commitment
+            analysis_date (str): Date to perform the analysis
+        
+        Returns:
+            Dict containing detailed waterfall distribution analysis
+        """
+        # Analyze each stage of the waterfall distribution
+        roc_result = self._return_of_capital(commitment_id, analysis_date)
+        pref_result = self._preferred_return(commitment_id, analysis_date, roc_result)
+        catch_up_result = self._catch_up(commitment_id, analysis_date, pref_result)
+        final_split_result = self._final_split(commitment_id, analysis_date, catch_up_result)
+
+        total_initial_commitment = self._get_total_commitment(commitment_id, analysis_date)
+
+        total_lp_profit = roc_result['lp_allocation'] + pref_result['lp_allocation'] + catch_up_result['lp_allocation'] + final_split_result['lp_allocation']
+        total_gp_profit = roc_result['gp_allocation'] + pref_result['gp_allocation'] + catch_up_result['gp_allocation'] + final_split_result['gp_allocation']
+
+        profit_split_percentage = (total_lp_profit - total_initial_commitment) / (total_lp_profit + total_gp_profit - total_initial_commitment)
+
+        # Compile comprehensive results
+        return {
+            'commitment_id': commitment_id,
+            'analysis_date': analysis_date,
+            'total_commitment': total_initial_commitment,
+            'total_distributions': self._get_total_distributions(commitment_id, analysis_date),
+            
+            # Stage-wise allocations
+            'return_of_capital': {
+                'lp_allocation': roc_result['lp_allocation'],
+                'gp_allocation': roc_result['gp_allocation']
+            },
+            'preferred_return': {
+                'lp_allocation': pref_result['lp_allocation'],
+                'gp_allocation': pref_result['gp_allocation']
+            },
+            'catch_up': {
+                'lp_allocation': catch_up_result['lp_allocation'],
+                'gp_allocation': catch_up_result['gp_allocation']
+            },
+            'final_split': {
+                'lp_allocation': final_split_result['lp_allocation'],
+                'gp_allocation': final_split_result['gp_allocation']
+            },
+
+            # Aggregate profit calculations
+            'total_lp_profit': round(total_lp_profit, 2),
+            'total_gp_profit': round(total_gp_profit, 2),
+            'profit_split_percentage': round(profit_split_percentage * 100, 3) / 100
+        }
+
     def generate_report(self, commitment_id: int, analysis_date: str) -> pd.DataFrame:
         """
         Generate a comprehensive waterfall distribution report.
@@ -337,22 +334,22 @@ class WaterfallEngine:
         
         return report_df
 
-# if __name__ == "__main__":
-#     engine = WaterfallEngine('transactions.csv')
-#     report = engine.generate_report(4, '2024-01-01')
-#     for index, row in report.iterrows():
-#         print(f"Commitment ID: {row['commitment_id']}")
-#         print(f"Analysis Date: {row['analysis_date']}")
-#         print(f"Total Commitment: {row['total_commitment']}")
-#         print(f"Total Distributions: {row['total_distributions']}")
-#         print(f"Return of Capital LP Allocation: {row['return_of_capital']['lp_allocation']}")
-#         print(f"Return of Capital GP Allocation: {row['return_of_capital']['gp_allocation']}")
-#         print(f"Preferred Return LP Allocation: {row['preferred_return']['lp_allocation']}")
-#         print(f"Preferred Return GP Allocation: {row['preferred_return']['gp_allocation']}")
-#         print(f"Catch-up LP Allocation: {row['catch_up']['lp_allocation']}")
-#         print(f"Catch-up GP Allocation: {row['catch_up']['gp_allocation']}")
-#         print(f"Final Split LP Allocation: {row['final_split']['lp_allocation']}")
-#         print(f"Final Split GP Allocation: {row['final_split']['gp_allocation']}")
-#         print(f"Total LP Profit: {row['total_lp_profit']}")
-#         print(f"Total GP Profit: {row['total_gp_profit']}")
-#         print(f"Profit Split Percentage: {row['profit_split_percentage']}")
+if __name__ == "__main__":
+    engine = WaterfallEngine('transactions.csv')
+    report = engine.generate_report(4, '2022-01-03')
+    for index, row in report.iterrows():
+        print(f"Commitment ID: {row['commitment_id']}")
+        print(f"Analysis Date: {row['analysis_date']}")
+        print(f"Total Commitment: {row['total_commitment']}")
+        print(f"Total Distributions: {row['total_distributions']}")
+        print(f"Return of Capital LP Allocation: {row['return_of_capital']['lp_allocation']}")
+        print(f"Return of Capital GP Allocation: {row['return_of_capital']['gp_allocation']}")
+        print(f"Preferred Return LP Allocation: {row['preferred_return']['lp_allocation']}")
+        print(f"Preferred Return GP Allocation: {row['preferred_return']['gp_allocation']}")
+        print(f"Catch-up LP Allocation: {row['catch_up']['lp_allocation']}")
+        print(f"Catch-up GP Allocation: {row['catch_up']['gp_allocation']}")
+        print(f"Final Split LP Allocation: {row['final_split']['lp_allocation']}")
+        print(f"Final Split GP Allocation: {row['final_split']['gp_allocation']}")
+        print(f"Total LP Profit: {row['total_lp_profit']}")
+        print(f"Total GP Profit: {row['total_gp_profit']}")
+        print(f"Profit Split Percentage: {row['profit_split_percentage']}")

@@ -33,10 +33,9 @@ function App() {
   const [date, setDate] = useState('')
   
   // Optional inputs with defaults
-  const [irr, setIrr] = useState(0.08)
-  const [carriedInterestRate, setCarriedInterestRate] = useState(0.2)
-  const [catchupRate, setCatchupRate] = useState(1)
-  const [lpSplitRate, setLpSplitRate] = useState(0.8)
+  const [pref_irr, setIrr] = useState(0.08)
+  const [carried_interest_percentage, setCarriedInterestRate] = useState(20)
+  const [catch_up_rate, setCatchupRate] = useState(1)
   
   // File and results state
   const [transactions, setTransactions] = useState<Transaction[] | null>(null)
@@ -104,10 +103,9 @@ function App() {
         input_commitment_id: commitmentId,
         input_date: date,
         transactions,
-        irr,
-        carried_interest_rate: carriedInterestRate,
-        catchup_rate: catchupRate,
-        lp_split_rate: lpSplitRate,
+        pref_irr,
+        carried_interest_percentage: carried_interest_percentage / 100,
+        catch_up_rate,
       };
       
       console.log('Request body being sent:', requestBody);  // Debug request body
@@ -171,43 +169,34 @@ function App() {
           <div className="optional-inputs">
             <TextField
               variant="filled"
-              label="IRR Rate"
+              label="Preferred IRR"
               type="number"
-              value={irr}
+              value={pref_irr}
               onChange={(e) => setIrr(parseFloat(e.target.value))}
               className="input-field"
               inputProps={{ step: "0.01" }}
-              // helperText="Default: 0.08"
             />
             <TextField
               variant="filled"
-              label="Carried Interest Rate"
+              label="Carried Interest (%)"
               type="number"
-              value={carriedInterestRate}
+              value={carried_interest_percentage}
               onChange={(e) => setCarriedInterestRate(parseFloat(e.target.value))}
               className="input-field"
-              inputProps={{ step: "0.01" }}
-              // helperText="Default: 0.2"
+              inputProps={{ 
+                step: "1",
+                min: "0",
+                max: "100"
+              }}
             />
             <TextField
               variant="filled"
               label="Catchup Rate"
               type="number"
-              value={catchupRate}
+              value={catch_up_rate}
               onChange={(e) => setCatchupRate(parseFloat(e.target.value))}
               className="input-field"
               inputProps={{ step: "0.01" }}
-              // helperText="Default: 1"
-            />
-            <TextField
-              variant="filled"
-              label="LP Split Rate"
-              type="number"
-              value={lpSplitRate}
-              onChange={(e) => setLpSplitRate(parseFloat(e.target.value))}
-              className="input-field"
-              inputProps={{ step: "0.01" }}
-              // helperText="Default: 0.8"
             />
           </div>
 

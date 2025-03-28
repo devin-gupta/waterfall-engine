@@ -33,10 +33,9 @@ class WaterfallRequest(BaseModel):
     input_commitment_id: float
     input_date: str
     transactions: List[Transaction]
-    irr: Optional[float] = 0.08
-    carried_interest_rate: Optional[float] = 0.2
-    catchup_rate: Optional[float] = 1.0
-    lp_split_rate: Optional[float] = 0.8
+    pref_irr: Optional[float] = 0.08
+    carried_interest_percentage: Optional[float] = 0.2
+    catch_up_rate: Optional[float] = 1.0
 
 @app.get("/api/health")  # Updated path to match healthcheck
 async def health_check():
@@ -74,10 +73,9 @@ async def calculate_waterfall(request: WaterfallRequest):
             # Initialize WaterfallEngine with the temporary CSV file
             engine = WaterfallEngine(
                 tmp_file.name,
-                irr=request.irr,
-                carried_interest_rate=request.carried_interest_rate,
-                catch_up_rate=request.catchup_rate,
-                lp_split_rate=request.lp_split_rate
+                pref_irr=request.pref_irr,
+                carried_interest_percentage=request.carried_interest_percentage,
+                catch_up_rate=request.catch_up_rate
             )
             
             # Analyze the commitment
