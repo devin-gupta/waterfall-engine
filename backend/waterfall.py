@@ -284,7 +284,7 @@ class WaterfallEngine:
         )
         total_gp_profit = roc_result['gp_allocation'] + pref_result['gp_allocation'] + catch_up_result['gp_allocation'] + final_split_result['gp_allocation']
 
-        profit_split_percentage = (total_lp_profit - total_initial_commitment) / (total_lp_profit + total_gp_profit - total_initial_commitment)
+        profit_split_percentage = (total_lp_profit) / (total_lp_profit + total_gp_profit)
 
         # Compile comprehensive results
         return {
